@@ -1,6 +1,6 @@
 import {getEditForm} from './edit-form';
 import {getCard} from './card';
-import {default as getButton} from './button-load';
+import {getButton} from './button-load';
 
 export const getBoardContainer = () => {
   return `<section class="board container">
