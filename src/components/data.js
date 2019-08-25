@@ -1,4 +1,44 @@
-const MONTHS = [
+import {getRandomNumber, getRandomValue} from './utils';
+
+const TAGS_SET = new Set([
+  `homework`,
+  `theory`,
+  `practice`,
+  `intensive`,
+  `keks`,
+  `keks2`,
+  `keks3`,
+  `kek4`,
+  `kek5`
+]);
+
+const DESCRIPTION = [
+  `Изучить теорию`,
+  `Сделать домашку`,
+  `Пройти интенсив на соточку`
+];
+
+const getRepeatingDays = () => {
+  return {
+    'Mo': false,
+    'Tu': false,
+    'We': getRandomValue([true, false]),
+    'Th': false,
+    'Fr': false,
+    'Sa': false,
+    'Su': false,
+  };
+};
+
+const COLORS = [
+  `black`,
+  `yellow`,
+  `blue`,
+  `green`,
+  `pink`
+];
+
+export const MONTHS = [
   `January`,
   `February`,
   `March`,
@@ -13,50 +53,17 @@ const MONTHS = [
   `December`
 ];
 
-const getTagArray = (tags) => {
-  const arr = Array.from(tags);
-  while (arr.length > 3) {
-    arr.splice(Math.floor(Math.random() * arr.length), 1);
-  }
-  return arr;
-};
-export const getTask = () => {
+export const getTaskMock = () => {
   return {
-    description: [
-      `Изучить теорию`,
-      `Сделать домашку`,
-      `Пройти интенсив на соточку`
-    ][Math.floor(Math.random() * 3)],
-    dueDate: Date.now() + 1 + Math.floor(Math.random() * 7) * 60 * 60 * 24 * 1000,
-    repeatingDays: {
-      'Mo': false,
-      'Tu': false,
-      'We': Boolean(Math.round(Math.random())),
-      'Th': false,
-      'Fr': false,
-      'Sa': false,
-      'Su': false,
-    },
-    tags: getTagArray(new Set([
-      `homework`,
-      `theory`,
-      `practice`,
-      `intensive`,
-      `keks`,
-      `keks2`,
-      `keks3`,
-      `kek4`,
-      `kek5`
-    ])),
-    color: [
-      `black`,
-      `yellow`,
-      `blue`,
-      `green`,
-      `pink`
-    ][Math.floor(Math.random() * 5)],
-    isFavorite: Boolean(Math.round(Math.random())),
-    isArchive: Boolean(Math.round(Math.random())),
+    description: getRandomValue(DESCRIPTION),
+    dueDate: Date.now() + getRandomNumber(1000, 7 * 24 * 3600 * 1000),
+    repeatingDays: getRepeatingDays(),
+    tags: Array(3).fill(``).map(() => {
+      return getRandomValue(Array.from(TAGS_SET));
+    }),
+    color: getRandomValue(COLORS),
+    isFavorite: getRandomValue([true, false]),
+    isArchive: getRandomValue([true, false]),
   };
 };
 
@@ -106,4 +113,3 @@ export const getFiltersData = (filtersCount) => {
     },
   ];
 };
-export {MONTHS};

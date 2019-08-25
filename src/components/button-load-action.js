@@ -1,7 +1,7 @@
 import {dataTaskList} from './board';
 import {renderContent} from './../main';
 
-export const getButtonLoadAction = () => {
+export const addButtonLoadAction = () => {
   const buttonLoad = document.querySelector(`.load-more`);
 
   if (buttonLoad) {
