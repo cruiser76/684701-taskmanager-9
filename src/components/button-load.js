@@ -1,4 +1,23 @@
-export const getLoadMoreButton = () => {
-  return `
+import {createElement} from './utils';
+
+export default class ButtonLoad {
+  constructor() {
+    this._element = undefined;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate().trim());
+    }
+    return this._element;
+  }
+
+  getTemplate() {
+    return `
     <button class="load-more" type="button">load more</button>`;
-};
+  }
+
+  set() {
+    this._element = undefined;
+  }
+}

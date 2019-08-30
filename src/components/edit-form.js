@@ -1,17 +1,34 @@
 import {MONTHS} from './data';
+import {createElement} from './utils';
 
-export const getEditForm = ({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) => {
-  const deadlineDate = new Date(dueDate);
-  return ` <article class="card card--edit card--${color} ${Object.keys(repeatingDays).some((day) => repeatingDays[day]) ? `card--repeat` : ``}">
+export default class TaskEdit {
+  constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
+    this._description = description;
+    this._deadlineDate = new Date(dueDate);
+    this._repeatingDays = repeatingDays;
+    this._tags = tags;
+    this._color = color;
+    this._isFavorite = isFavorite;
+    this._isArchive = isArchive;
+    this._element = undefined;
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate().trim());
+    }
+    return this._element;
+  }
+  getTemplate() {
+    return ` <article class="card card--edit card--${this._color} ${Object.values(this._repeatingDays).some((el) => el === true) ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
-          <button type="button" class="card__btn card__btn--archive ${isArchive || `card__btn--disabled`}">
+          <button type="button" class="card__btn card__btn--archive ${this._isArchive || `card__btn--disabled`}">
             archive
           </button>
           <button
             type="button"
-            class="card__btn card__btn--favorites ${isFavorite || `card__btn--disabled`}"
+            class="card__btn card__btn--favorites ${this._isFavorite || `card__btn--disabled`}"
           >
             favorites
           </button>
@@ -29,7 +46,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${description}</textarea>
+            >${this._description}</textarea>
           </label>
         </div>
 
@@ -47,7 +64,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${deadlineDate.getDate()} ${MONTHS[deadlineDate.getMonth()]} ${deadlineDate.getHours() > 12 ? deadlineDate.getHours() - 12 : deadlineDate.getHours()}:${deadlineDate.getMinutes()} ${deadlineDate.getHours() > 12 ? `PM` : `AM`}"
+                    value="${this._deadlineDate.getDate()} ${MONTHS[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
                   />
                 </label>
               </fieldset>
@@ -64,7 +81,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-mo-4"
                     name="repeat"
                     value="mo"
-                    ${!repeatingDays.Mo || `checked`}
+                    ${!this._repeatingDays.Mo || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-mo-4"
                     >mo</label
@@ -75,7 +92,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-tu-4"
                     name="repeat"
                     value="tu"
-                    ${!repeatingDays.Tu || `checked`}
+                    ${!this._repeatingDays.Tu || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-tu-4"
                     >tu</label
@@ -86,7 +103,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-we-4"
                     name="repeat"
                     value="we"
-                    ${!repeatingDays.We || `checked`}
+                    ${!this._repeatingDays.We || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-we-4"
                     >we</label
@@ -97,7 +114,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-th-4"
                     name="repeat"
                     value="th"
-                    ${!repeatingDays.Th || `checked`}
+                    ${!this._repeatingDays.Th || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-th-4"
                     >th</label
@@ -108,7 +125,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-fr-4"
                     name="repeat"
                     value="fr"
-                    ${!repeatingDays.Fr || `checked`}
+                    ${!this._repeatingDays.Fr || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-fr-4"
                     >fr</label
@@ -119,7 +136,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     name="repeat"
                     value="sa"
                     id="repeat-sa-4"
-                    ${!repeatingDays.Sa || `checked`}
+                    ${!this._repeatingDays.Sa || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-sa-4"
                     >sa</label
@@ -130,7 +147,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     id="repeat-su-4"
                     name="repeat"
                     value="su"
-                    ${!repeatingDays.Su || `checked`}
+                    ${!this._repeatingDays.Su || `checked`}
                   />
                   <label class="card__repeat-day" for="repeat-su-4"
                     >su</label
@@ -149,7 +166,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
-                    #${tags[0]}
+                    #${this._tags[0]}
                   </p>
                   <button type="button" class="card__hashtag-delete">
                     delete
@@ -164,7 +181,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
-                    #${tags[1]}
+                    #${this._tags[1]}
                   </p>
                   <button type="button" class="card__hashtag-delete">
                     delete
@@ -179,7 +196,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
-                    #${tags[2]}
+                    #${this._tags[2]}
                   </p>
                   <button type="button" class="card__hashtag-delete">
                     delete
@@ -207,7 +224,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                 class="card__color-input card__color-input--black visually-hidden"
                 name="color"
                 value="black"
-                ${color === `black` ? `checked` : ``}
+                ${this._color === `black` ? `checked` : ``}
               />
               <label
                 for="color-black-4"
@@ -220,7 +237,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                 class="card__color-input card__color-input--yellow visually-hidden"
                 name="color"
                 value="yellow"
-                ${color === `yellow` ? `checked` : ``}
+                ${this._color === `yellow` ? `checked` : ``}
               />
               <label
                 for="color-yellow-4"
@@ -233,7 +250,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                 class="card__color-input card__color-input--blue visually-hidden"
                 name="color"
                 value="blue"
-                ${color === `blue` ? `checked` : ``}
+                ${this._color === `blue` ? `checked` : ``}
               />
               <label
                 for="color-blue-4"
@@ -246,7 +263,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                 class="card__color-input card__color-input--green visually-hidden"
                 name="color"
                 value="green"
-                ${color === `green` ? `checked` : ``}
+                ${this._color === `green` ? `checked` : ``}
               />
               <label
                 for="color-green-4"
@@ -259,7 +276,7 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
                 class="card__color-input card__color-input--pink visually-hidden"
                 name="color"
                 value="pink"
-                ${color === `pink` ? `checked` : ``}
+                ${this._color === `pink` ? `checked` : ``}
               />
               <label
                 for="color-pink-4"
@@ -277,4 +294,5 @@ export const getEditForm = ({description, dueDate, repeatingDays, tags, color, i
       </div>
     </form>
   </article>`;
-};
+  }
+}
