@@ -17,7 +17,7 @@ export default class ButtonLoad {
     <button class="load-more" type="button">load more</button>`;
   }
 
-  set() {
+  removeElement() {
     this._element = undefined;
   }
 }

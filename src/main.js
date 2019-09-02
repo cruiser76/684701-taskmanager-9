@@ -1,11 +1,11 @@
-import {default as Task} from './components/card';
-import {default as TaskEdit} from './components/edit-form';
-import {default as Search} from './components/site-search';
-import {default as Sort} from './components/sorting';
+import Task from './components/task';
+import TaskEdit from './components/task-edit';
+import Search from './components/search';
+import Sort from './components/sort';
 import ButtonLoad from './components/button-load';
-import Menu from './components/site-menu';
+import Menu from './components/menu';
 import BoardContainer from './components/board-container';
-import Filters from './components/site-filters';
+import Filters from './components/filters';
 import {getFiltersData, getTaskMock} from './components/data';
 import {render, unrender} from './components/utils';
 
@@ -143,14 +143,14 @@ if (boardList) {
       // перерисуем фильтр
       if (document.querySelector(`.main__filter`)) {
         unrender(filters.getElement());
-        filters.set(getFiltersData(getFilterCount()));
+        filters.resetFilters(getFiltersData(getFilterCount()));
         render(boardList, filters.getElement(), `before`);
       }
 
       // если задач больше нет удаляем кнопку
       if (dataTaskList.length === 0) {
         unrender(buttonLoad.getElement());
-        buttonLoad.set();
+        buttonLoad.removeElement();
       }
     });
   }
