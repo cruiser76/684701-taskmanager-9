@@ -70,6 +70,12 @@ export const getTaskMock = () => {
 export const getFiltersData = (filtersCount) => {
   return [
     {
+      title: `all`,
+      count() {
+        return filtersCount.all;
+      }
+    },
+    {
       title: `OVERDUE`,
       count() {
         return filtersCount.overdue;
@@ -105,11 +111,6 @@ export const getFiltersData = (filtersCount) => {
         return filtersCount.archive;
       }
     },
-    {
-      title: `all`,
-      count() {
-        return filtersCount.all;
-      }
-    },
+
   ];
 };
