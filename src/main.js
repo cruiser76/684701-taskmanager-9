@@ -6,6 +6,7 @@ import ButtonLoad from './components/button-load';
 import Menu from './components/menu';
 import BoardContainer from './components/board-container';
 import Filters from './components/filters';
+import NoTask from './components/no-task';
 import {getFiltersData, getTaskMock} from './components/data';
 import {render, unrender} from './components/utils';
 
@@ -58,7 +59,7 @@ const getFilterCount = () => {
 
 // получим список задач(пока моковых)
 const getDataTaskList = () => {
-  const TASK_COUNT = 25;
+  const TASK_COUNT = 10;
   const dataTaskList = [];
   for (let i = 0; i < TASK_COUNT; i += 1) {
     dataTaskList.push(getTaskMock());
@@ -85,19 +86,33 @@ const renderTask = (taskMock) => {
   const task = new Task(taskMock);
   const taskEdit = new TaskEdit(taskMock);
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      tasksContainer.replaceChild(task.getElement(), taskEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   // вешаем обработчик открытия формы редактирования
   task.getElement()
   .querySelector(`.card__btn--edit`)
   .addEventListener(`click`, (evt) => {
     evt.preventDefault();
     tasksContainer.replaceChild(taskEdit.getElement(), task.getElement());
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
+
+  taskEdit.getElement().querySelector(`textarea`)
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
 
   taskEdit.getElement()
   .querySelector(`.card__save`)
   .addEventListener(`click`, (evt) => {
     evt.preventDefault();
     tasksContainer.replaceChild(task.getElement(), taskEdit.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   render(tasksContainer, task.getElement(), `beforeend`);
@@ -116,42 +131,48 @@ const boardContainer = new BoardContainer();
 render(mainContainer, boardContainer.getElement(), `beforeend`);
 
 const boardList = document.querySelector(`.board`);
-
-const sort = new Sort();
-render(boardList, sort.getElement(), `afterbegin`);
-
 const tasksContainer = document.querySelector(`.board__tasks`);
-
-if (boardList) {
-  let arr = getCardList();
-  arr.forEach((el) => renderTask(el));
-
-  const filters = new Filters(getFiltersData(getFilterCount()));
+let arr = getCardList();
+const filters = new Filters(getFiltersData(getFilterCount()));
+if ((dataTaskArray.length === 0 && dataTaskList.length === 0) || (dataTaskList.length === 0 && dataTaskArray.length === getFilterCount().archive)) {
+  const noTask = new NoTask();
+  boardList.replaceChild(noTask.getElement(), tasksContainer);
   render(boardList, filters.getElement(), `before`);
+} else {
+  const sort = new Sort();
+  render(boardList, sort.getElement(), `afterbegin`);
 
-  // кнопка
-  if (!document.querySelector(`.load-more`) && dataTaskList.length > 0) {
-    const buttonLoad = new ButtonLoad();
-    render(boardList, buttonLoad.getElement(), `beforeend`); // рендерим кнопку
+  if (boardList) {
 
-    buttonLoad.getElement()
-    .addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      arr = getCardList();
-      arr.forEach((el) => renderTask(el));
+    arr.forEach((el) => renderTask(el));
 
-      // перерисуем фильтр
-      if (document.querySelector(`.main__filter`)) {
-        unrender(filters.getElement());
-        filters.resetFilters(getFiltersData(getFilterCount()));
-        render(boardList, filters.getElement(), `before`);
-      }
 
-      // если задач больше нет удаляем кнопку
-      if (dataTaskList.length === 0) {
-        unrender(buttonLoad.getElement());
-        buttonLoad.removeElement();
-      }
-    });
+    render(boardList, filters.getElement(), `before`);
+
+    // кнопка
+    if (!document.querySelector(`.load-more`) && dataTaskList.length > 0) {
+      const buttonLoad = new ButtonLoad();
+      render(boardList, buttonLoad.getElement(), `beforeend`); // рендерим кнопку
+
+      buttonLoad.getElement()
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        arr = getCardList();
+        arr.forEach((el) => renderTask(el));
+
+        // перерисуем фильтр
+        if (document.querySelector(`.main__filter`)) {
+          unrender(filters.getElement());
+          filters.resetFilters(getFiltersData(getFilterCount()));
+          render(boardList, filters.getElement(), `before`);
+        }
+
+        // если задач больше нет удаляем кнопку
+        if (dataTaskList.length === 0) {
+          unrender(buttonLoad.getElement());
+          buttonLoad.removeElement();
+        }
+      });
+    }
   }
 }
