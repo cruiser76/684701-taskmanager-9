@@ -1,15 +1,8 @@
-import {createElement} from "./utils";
+import AbstractComponent from "./abstract-component";
 
-export default class NoTask {
+export default class NoTask extends AbstractComponent {
   constructor() {
-    this._element = undefined;
-  }
-
-  getElement() {
-    if (this._element === undefined) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
+    super();
   }
 
   getTemplate() {

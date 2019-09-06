@@ -1,8 +1,9 @@
 import {MONTHS} from './data';
-import {createElement} from './utils';
+import AbstractComponent from './abstract-component';
 
-export default class Task {
+export default class Task extends AbstractComponent {
   constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
+    super();
     this._description = description;
     this._deadlineDate = new Date(dueDate);
     this._repeatingDays = repeatingDays;
@@ -10,14 +11,6 @@ export default class Task {
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
-    this._element = undefined;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
   }
 
   getTemplate() {

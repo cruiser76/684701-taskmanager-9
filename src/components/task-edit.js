@@ -1,8 +1,9 @@
 import {MONTHS} from './data';
-import {createElement} from './utils';
+import AbstractComponent from './abstract-component';
 
-export default class TaskEdit {
+export default class TaskEdit extends AbstractComponent {
   constructor({description, dueDate, repeatingDays, tags, color, isFavorite, isArchive}) {
+    super();
     this._description = description;
     this._deadlineDate = new Date(dueDate);
     this._repeatingDays = repeatingDays;
@@ -10,14 +11,8 @@ export default class TaskEdit {
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
-    this._element = undefined;
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
-  }
+
   getTemplate() {
     return ` <article class="card card--edit card--${this._color} ${Object.values(this._repeatingDays).some((el) => el === true) ? `card--repeat` : ``}">
     <form class="card__form" method="get">
