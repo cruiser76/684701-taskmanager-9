@@ -9,6 +9,7 @@ import Filters from './filters';
 import NoTask from './no-task';
 import Sort from './sort';
 import {getFiltersData} from './data';
+import TaskList from './task-list';
 
 export default class BoardController {
   constructor(mainContainer, menuContainer, dataTaskList) {
@@ -19,8 +20,9 @@ export default class BoardController {
     this._dataTaskArray = [];
     this._menu = new Menu();
     this._search = new Search();
-    this._boardContainer = new BoardContainer();
     this._sort = new Sort();
+    this._boardContainer = new BoardContainer();
+    this._taskList = new TaskList();
     this._buttonLoad = new ButtonLoad();
     this._noTaskMsg = new NoTask();
     this._cardsList = this._getCardList();
@@ -33,12 +35,15 @@ export default class BoardController {
 
     const filters = new Filters(getFiltersData(this._getFilterCount()));
 
-    if ((this._dataTaskArray.length === 0 && this._dataTaskList.length === 0) || (this._dataTaskList.length === 0 && this._dataTaskArray.length === this._getFilterCount().archive)) {
-      this._boardContainer.getElement().replaceChild(this._noTaskMsg.getElement(), this._boardContainer.getElement().querySelector(`.board__tasks`));
+    if ((this._dataTaskArray.length === 0 && this._cardsList === 0) || (this._dataTaskList.length === 0 && this._dataTaskArray.length === this._getFilterCount().archive)) {
       render(this._boardContainer.getElement(), filters.getElement(), `before`);
+      render(this._boardContainer.getElement(), this._noTaskMsg.getElement(), `beforeend`);
     } else {
       render(this._boardContainer.getElement(), this._sort.getElement(), `afterbegin`);
       render(this._boardContainer.getElement(), filters.getElement(), `before`);
+      render(this._boardContainer.getElement(), this._taskList.getElement(), `beforeend`);
+      this._sort.getElement().addEventListener(`click`, (evt) => this._onSortButtonClick(evt));
+
       this._cardsList.forEach((el) => this._renderTask(el));
 
       // кнопка
@@ -68,6 +73,7 @@ export default class BoardController {
     }
   }
 
+  // считаем фильтры
   _getFilterCount() {
     let filterCount = {};
     let overdue = 0;
@@ -111,6 +117,7 @@ export default class BoardController {
     return filterCount;
   }
 
+  // добавляем карточки для рендеринга
   _getCardList() {
     let cards = [];
 
@@ -129,7 +136,7 @@ export default class BoardController {
 
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
-        this._boardContainer.getElement().querySelector(`.board__tasks`).replaceChild(task.getElement(), taskEdit.getElement());
+        this._taskList.getElement().replaceChild(task.getElement(), taskEdit.getElement());
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
@@ -139,7 +146,7 @@ export default class BoardController {
     .querySelector(`.card__btn--edit`)
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._boardContainer.getElement().querySelector(`.board__tasks`).replaceChild(taskEdit.getElement(), task.getElement());
+      this._taskList.getElement().replaceChild(taskEdit.getElement(), task.getElement());
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
@@ -152,10 +159,34 @@ export default class BoardController {
     .querySelector(`.card__save`)
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._boardContainer.getElement().querySelector(`.board__tasks`).replaceChild(task.getElement(), taskEdit.getElement());
+      this._taskList.getElement().replaceChild(task.getElement(), taskEdit.getElement());
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    render(this._boardContainer.getElement().querySelector(`.board__tasks`), task.getElement(), `beforeend`);
+    render(this._taskList.getElement(), task.getElement(), `beforeend`);
+  }
+
+  // сортировка
+  _onSortButtonClick(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+    this._taskList.getElement().innerHTML = ``;
+
+    switch (evt.target.dataset.sortType) {
+      case `date-up`:
+        const sortedByDateUpTasks = this._dataTaskArray.slice().sort((a, b) => a.dueDate - b.dueDate);
+        sortedByDateUpTasks.forEach((taskMock) => this._renderTask(taskMock));
+        break;
+      case `date-down`:
+        const sortedByDateDownTasks = this._dataTaskArray.slice().sort((a, b) => b.dueDate - a.dueDate);
+        sortedByDateDownTasks.forEach((taskMock) => this._renderTask(taskMock));
+        break;
+      case `default`:
+        this._dataTaskArray.slice().forEach((taskMock) => this._renderTask(taskMock));
+        break;
+    }
+
   }
 }

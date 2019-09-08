@@ -3,7 +3,7 @@ import BoardController from './components/board-controller';
 
 // получим список задач(пока моковых)
 const getDataTaskList = () => {
-  const TASK_COUNT = 9;
+  const TASK_COUNT = 11;
   const dataTaskList = [];
   for (let i = 0; i < TASK_COUNT; i += 1) {
     dataTaskList.push(getTaskMock());
