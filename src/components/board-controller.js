@@ -8,7 +8,7 @@ import ButtonLoad from './button-load';
 import Filters from './filters';
 import NoTask from './no-task';
 import Sort from './sort';
-import {getFiltersData} from './data';
+import {getFiltersData, SortType} from './data';
 import TaskList from './task-list';
 
 export default class BoardController {
@@ -175,18 +175,17 @@ export default class BoardController {
     this._taskList.getElement().innerHTML = ``;
 
     switch (evt.target.dataset.sortType) {
-      case `date-up`:
+      case SortType.DATE_UP:
         const sortedByDateUpTasks = this._dataTaskArray.slice().sort((a, b) => a.dueDate - b.dueDate);
         sortedByDateUpTasks.forEach((taskMock) => this._renderTask(taskMock));
         break;
-      case `date-down`:
+      case SortType.DATE_DOWN:
         const sortedByDateDownTasks = this._dataTaskArray.slice().sort((a, b) => b.dueDate - a.dueDate);
         sortedByDateDownTasks.forEach((taskMock) => this._renderTask(taskMock));
         break;
-      case `default`:
+      case SortType.DEFAULT:
         this._dataTaskArray.slice().forEach((taskMock) => this._renderTask(taskMock));
         break;
     }
-
   }
 }
