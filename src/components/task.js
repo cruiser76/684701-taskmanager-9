@@ -1,4 +1,4 @@
-import {MONTHS} from './data';
+import {Months} from './data';
 import AbstractComponent from './abstract-component';
 
 export default class Task extends AbstractComponent {
@@ -48,7 +48,7 @@ export default class Task extends AbstractComponent {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${this._deadlineDate.getDate()} ${MONTHS[this._deadlineDate.getMonth()]}</span>
+                    <span class="card__date">${this._deadlineDate.getDate()} ${Months[this._deadlineDate.getMonth()]}</span>
                     <span class="card__time">${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}</span>
                   </p>
                 </div>

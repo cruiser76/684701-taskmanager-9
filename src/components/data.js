@@ -1,6 +1,12 @@
 import {getRandomNumber, getRandomValue} from './utils';
 
-const TAGS_SET = new Set([
+export const SortType = {
+  DATE_UP: `date-up`,
+  DATE_DOWN: `date-down`,
+  DEFAULT: `default`
+};
+
+const TagsSet = new Set([
   `homework`,
   `theory`,
   `practice`,
@@ -12,7 +18,7 @@ const TAGS_SET = new Set([
   `kek5`
 ]);
 
-const DESCRIPTION = [
+const Description = [
   `Изучить теорию`,
   `Сделать домашку`,
   `Пройти интенсив на соточку`
@@ -30,7 +36,7 @@ const getRepeatingDays = () => {
   };
 };
 
-const COLORS = [
+const Colors = [
   `black`,
   `yellow`,
   `blue`,
@@ -38,7 +44,7 @@ const COLORS = [
   `pink`
 ];
 
-export const MONTHS = [
+export const Months = [
   `January`,
   `February`,
   `March`,
@@ -55,13 +61,13 @@ export const MONTHS = [
 
 export const getTaskMock = () => {
   return {
-    description: getRandomValue(DESCRIPTION),
+    description: getRandomValue(Description),
     dueDate: Date.now() + getRandomNumber(1000, 7 * 24 * 3600 * 1000),
     repeatingDays: getRepeatingDays(),
     tags: Array(3).fill(``).map(() => {
-      return getRandomValue(Array.from(TAGS_SET));
+      return getRandomValue(Array.from(TagsSet));
     }),
-    color: getRandomValue(COLORS),
+    color: getRandomValue(Colors),
     isFavorite: getRandomValue([true, false]),
     isArchive: getRandomValue([true, false]),
   };

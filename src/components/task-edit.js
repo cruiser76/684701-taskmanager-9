@@ -1,4 +1,4 @@
-import {MONTHS} from './data';
+import {Months} from './data';
 import AbstractComponent from './abstract-component';
 
 export default class TaskEdit extends AbstractComponent {
@@ -59,7 +59,7 @@ export default class TaskEdit extends AbstractComponent {
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${this._deadlineDate.getDate()} ${MONTHS[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
+                    value="${this._deadlineDate.getDate()} ${Months[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
                   />
                 </label>
               </fieldset>
