@@ -1,15 +1,14 @@
-import {render, unrender} from './utils';
-import Menu from './menu';
-import Search from './search';
-import Task from './task';
-import TaskEdit from './task-edit';
-import BoardContainer from './board-container';
-import ButtonLoad from './button-load';
-import Filters from './filters';
-import NoTask from './no-task';
-import Sort from './sort';
-import {getFiltersData, SortType} from './data';
-import TaskList from './task-list';
+import {render, unrender} from '../components/utils';
+import Menu from '../components/menu';
+import Search from '../components/search';
+import BoardContainer from '../components/board-container';
+import ButtonLoad from '../components/button-load';
+import Filters from '../components/filters';
+import NoTask from '../components/no-task';
+import Sort from '../components/sort';
+import {getFiltersData, SortType} from '../components/data';
+import TaskList from '../components/task-list';
+import TaskController from './task-controller';
 
 export default class BoardController {
   constructor(mainContainer, menuContainer, dataTaskList) {
@@ -26,6 +25,9 @@ export default class BoardController {
     this._buttonLoad = new ButtonLoad();
     this._noTaskMsg = new NoTask();
     this._cardsList = this._getCardList();
+    this._subscriptions = [];
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onChangeView = this._onChangeView.bind(this);
   }
 
   init() {
@@ -71,6 +73,11 @@ export default class BoardController {
         });
       }
     }
+  }
+
+  _renderBoard(tasks) {
+    this._taskList.getElement().innerHTML = ``;
+    tasks.forEach((taskMock) => this._renderTask(taskMock));
   }
 
   // считаем фильтры
@@ -130,42 +137,19 @@ export default class BoardController {
     return cards;
   }
 
-  _renderTask(taskElement) {
-    const task = new Task(taskElement);
-    const taskEdit = new TaskEdit(taskElement);
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        this._taskList.getElement().replaceChild(task.getElement(), taskEdit.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    // вешаем обработчик открытия формы редактирования
-    task.getElement()
-    .querySelector(`.card__btn--edit`)
-    .addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      this._taskList.getElement().replaceChild(taskEdit.getElement(), task.getElement());
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    taskEdit.getElement().querySelector(`textarea`)
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-    taskEdit.getElement()
-    .querySelector(`.card__save`)
-    .addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      this._taskList.getElement().replaceChild(task.getElement(), taskEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(this._taskList.getElement(), task.getElement(), `beforeend`);
+  _renderTask(taskData) {
+    const taskController = new TaskController(this._taskList, taskData, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(taskController.setDefaultView.bind(taskController));
   }
 
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
+  }
+
+  _onDataChange(newData, oldData) {
+    this._dataTaskArray[this._dataTaskArray.findIndex((it) => it === oldData)] = newData;
+    this._renderBoard(this._dataTaskArray);
+  }
   // сортировка
   _onSortButtonClick(evt) {
     evt.preventDefault();

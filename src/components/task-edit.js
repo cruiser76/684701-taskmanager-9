@@ -11,6 +11,7 @@ export default class TaskEdit extends AbstractComponent {
     this._color = color;
     this._isFavorite = isFavorite;
     this._isArchive = isArchive;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -59,7 +60,7 @@ export default class TaskEdit extends AbstractComponent {
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${this._deadlineDate.getDate()} ${Months[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
+                    value="${this._deadlineDate.getFullYear()} ${this._deadlineDate.getDate()} ${Months[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
                   />
                 </label>
               </fieldset>
@@ -289,5 +290,45 @@ export default class TaskEdit extends AbstractComponent {
       </div>
     </form>
   </article>`;
+  }
+
+  _subscribeOnEvents() {
+    this._onHashtagAdd();
+    this._onHashtagDelPress();
+  }
+
+  _onHashtagAdd() {
+    this.getElement()
+    .querySelector(`.card__hashtag-input`).addEventListener(`keydown`, (evt) => {
+      if (evt.key === `Enter`) {
+        evt.preventDefault();
+        this.getElement().querySelector(`.card__hashtag-list`)
+        .insertAdjacentHTML(`beforeend`, `<span class="card__hashtag-inner">
+        <input
+          type="hidden"
+          name="hashtag"
+          value="${evt.target.value}"
+          class="card__hashtag-hidden-input"
+        />
+        <p class="card__hashtag-name">
+          #${evt.target.value}
+        </p>
+        <button type="button" class="card__hashtag-delete">
+          delete
+        </button>
+      </span>`);
+        evt.target.value = ``;
+      }
+    });
+  }
+
+  _onHashtagDelPress() {
+    this.getElement()
+    .querySelector(`.card__hashtag-list`).addEventListener(`click`, (evt) => {
+      if (evt.target.nodeName !== `BUTTON`) {
+        return;
+      }
+      evt.target.parentNode.remove();
+    });
   }
 }

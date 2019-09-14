@@ -1,5 +1,5 @@
 import {getTaskMock} from './components/data';
-import BoardController from './components/board-controller';
+import BoardController from './controllers/board-controller';
 
 // получим список задач(пока моковых)
 const getDataTaskList = () => {
