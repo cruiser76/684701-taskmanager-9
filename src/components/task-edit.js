@@ -1,5 +1,4 @@
 import moment from 'moment';
-import {Months} from './data';
 import AbstractComponent from './abstract-component';
 
 export default class TaskEdit extends AbstractComponent {

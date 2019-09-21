@@ -24,7 +24,6 @@ export default class TaskController {
       altInput: true,
       allowInput: true,
       enableTime: true, // выбор времени
-      time_24hr: true, // 24 часовой формат
       defaultDate: this._data.dueDate,
     });
 
