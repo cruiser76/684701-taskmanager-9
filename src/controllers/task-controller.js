@@ -1,3 +1,8 @@
+// Подключение flatpickr для календаря
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
+
 import {render} from '../components/utils';
 import Task from '../components/task';
 import TaskEdit from '../components/task-edit';
@@ -14,6 +19,14 @@ export default class TaskController {
   }
 
   init() {
+    // Использование flatpickr
+    flatpickr(this._taskEdit.getElement().querySelector(`.card__date`), {
+      altInput: true,
+      allowInput: true,
+      enableTime: true, // выбор времени
+      defaultDate: this._data.dueDate,
+    });
+
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         this._container.getElement().replaceChild(this._task.getElement(), this._taskEdit.getElement());
@@ -66,7 +79,7 @@ export default class TaskController {
           'fr': false,
           'sa': false,
           'su': false,
-        })
+        }),
       };
 
       this._onDataChange(entry, this._data);

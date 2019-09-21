@@ -1,4 +1,4 @@
-import {Months} from './data';
+import moment from 'moment';
 import AbstractComponent from './abstract-component';
 
 export default class TaskEdit extends AbstractComponent {
@@ -6,6 +6,7 @@ export default class TaskEdit extends AbstractComponent {
     super();
     this._description = description;
     this._deadlineDate = new Date(dueDate);
+    this._dueDate = dueDate;
     this._repeatingDays = repeatingDays;
     this._tags = tags;
     this._color = color;
@@ -60,7 +61,7 @@ export default class TaskEdit extends AbstractComponent {
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${this._deadlineDate.getFullYear()} ${this._deadlineDate.getDate()} ${Months[this._deadlineDate.getMonth()]} ${this._deadlineDate.getHours() > 12 ? this._deadlineDate.getHours() - 12 : this._deadlineDate.getHours()}:${this._deadlineDate.getMinutes()} ${this._deadlineDate.getHours() > 12 ? `PM` : `AM`}"
+                    value="${moment(this._dueDate).format(`YY MMM`)}"
                   />
                 </label>
               </fieldset>
@@ -158,7 +159,7 @@ export default class TaskEdit extends AbstractComponent {
                   <input
                     type="hidden"
                     name="hashtag"
-                    value="repeat"
+                    value="${this._tags[0]}"
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
@@ -173,7 +174,7 @@ export default class TaskEdit extends AbstractComponent {
                   <input
                     type="hidden"
                     name="hashtag"
-                    value="repeat"
+                    value="${this._tags[1]}"
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
@@ -188,7 +189,7 @@ export default class TaskEdit extends AbstractComponent {
                   <input
                     type="hidden"
                     name="hashtag"
-                    value="repeat"
+                    value="${this._tags[2]}"
                     class="card__hashtag-hidden-input"
                   />
                   <p class="card__hashtag-name">
